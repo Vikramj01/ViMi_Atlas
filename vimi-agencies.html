@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlas for Agencies — Conversion Signal Intelligence | VIMI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --off-bg: #f7f5f2;
+    --panel: #f0ede9;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --ink: #111111;
+    --ink-dim: rgba(17,17,17,0.55);
+    --ink-faint: rgba(17,17,17,0.3);
+    --accent: #03A3FE;
+    --accent-dim: rgba(3,163,254,0.15);
+    --accent-faint: rgba(3,163,254,0.06);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 48px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-left { display: flex; align-items: center; gap: 16px; }
+  .nav-back { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); text-decoration: none; transition: color 0.2s; }
+  .nav-back::before { content: '←'; font-size: 13px; }
+  .nav-back:hover { color: var(--accent); }
+  .nav-divider { width: 1px; height: 20px; background: var(--border-strong); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-divider { width: 1px; height: 22px; background: var(--border-strong); margin: 0 4px; }
+  .nav-atlas-text { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
+  .nav-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(3,163,254,0.35); padding: 4px 12px; border-radius: 20px; }
+  .nav-cta { background: var(--accent); color: #fff; text-decoration: none; padding: 10px 22px; border-radius: 4px; font-size: 14px; font-weight: 500; font-family: var(--font-body); transition: opacity 0.2s; }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 140px 48px 80px; position: relative; overflow: hidden; background: var(--bg); }
+  .hero::before { content: ''; position: absolute; top: -200px; right: -100px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(3,163,254,0.06) 0%, transparent 65%); pointer-events: none; }
+  .hero-content { display: flex; flex-direction: column; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; opacity: 0; animation: fadeUp 0.7s 0.1s forwards; }
+  .hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+  .hero-headline { font-family: var(--font-display); font-size: clamp(40px, 5.5vw, 76px); font-weight: 900; line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.7s 0.2s forwards; }
+  .hero-headline em { font-style: italic; color: var(--accent); }
+  .hero-sub { font-size: 17px; font-weight: 300; color: var(--ink-dim); max-width: 520px; line-height: 1.75; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.7s 0.3s forwards; }
+  .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.7s 0.4s forwards; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 4px; font-size: 15px; font-weight: 500; transition: opacity 0.2s, transform 0.2s; }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--ink-dim); text-decoration: none; padding: 14px 28px; border-radius: 4px; border: 1px solid var(--border-strong); font-size: 15px; font-weight: 400; transition: color 0.2s, border-color 0.2s; }
+  .btn-ghost:hover { color: var(--ink); border-color: rgba(0,0,0,0.3); }
+
+  /* HERO VISUAL */
+  .hero-visual { background: #f7f5f2; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; gap: 13px; box-shadow: 0 8px 40px rgba(0,0,0,0.07); opacity: 0; animation: fadeUp 0.8s 0.5s forwards; position: relative; z-index: 1; }
+  .vis-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .vis-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+  .vis-badge { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #2d9a5f; background: rgba(45,154,95,0.1); border: 1px solid rgba(45,154,95,0.2); padding: 3px 8px; border-radius: 20px; }
+  .vis-badge.warn { color: var(--accent); background: var(--accent-faint); border-color: rgba(3,163,254,0.3); }
+  .vis-section-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-top: 2px; }
+  .vis-row { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 6px; padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .vis-row-label { font-size: 12px; color: var(--ink-dim); flex: 1; }
+  .vis-row-value { font-family: var(--font-mono); font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .vis-row-value.green { color: #2d9a5f; }
+  .vis-row-value.amber { color: #f0a500; }
+  .vis-row-value.red { color: var(--accent); }
+  .vis-progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .vis-progress-label { font-size: 11px; color: var(--ink-dim); width: 130px; flex-shrink: 0; }
+  .vis-bar-track { flex: 1; height: 4px; background: rgba(0,0,0,0.07); border-radius: 2px; overflow: hidden; }
+  .vis-bar { height: 100%; border-radius: 2px; background: var(--accent); }
+  .vis-bar.green { background: #2d9a5f; }
+  .vis-bar.amber { background: #f0a500; }
+  .vis-progress-val { font-family: var(--font-mono); font-size: 11px; font-weight: 500; width: 36px; text-align: right; }
+  .vis-progress-val.green { color: #2d9a5f; }
+  .vis-progress-val.amber { color: #f0a500; }
+  .vis-progress-val.red { color: var(--accent); }
+  .vis-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 1px 0; }
+  .vis-alert { border-radius: 6px; padding: 10px 14px; display: flex; align-items: flex-start; gap: 10px; background: rgba(45,154,95,0.05); border: 1px solid rgba(45,154,95,0.2); }
+  .vis-alert.warn { background: var(--accent-faint); border-color: rgba(3,163,254,0.2); }
+  .vis-alert-dot { width: 7px; height: 7px; background: #2d9a5f; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .vis-alert-dot.red { background: var(--accent); }
+  .vis-alert-text { font-size: 11px; color: var(--ink-dim); line-height: 1.5; }
+  .vis-alert-text strong { color: #2d9a5f; font-weight: 500; }
+  .vis-alert-text strong.red { color: var(--accent); }
+  .vis-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+  .vis-footer-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .vis-stat-num { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: #2d9a5f; line-height: 1; }
+
+  /* TICKER */
+  .ticker-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0; background: var(--accent-faint); }
+  .ticker { display: flex; gap: 64px; animation: ticker-scroll 24s linear infinite; white-space: nowrap; }
+  .ticker-item { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; }
+  .ticker-dot { display: inline-block; width: 4px; height: 4px; background: var(--accent); border-radius: 50%; margin: 0 8px; vertical-align: middle; opacity: 0.4; }
+  @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* SECTIONS */
+  section { padding: 96px 48px; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .section-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); }
+  .section-title { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 16px; }
+  .section-sub { color: var(--ink-dim); font-size: 16px; max-width: 580px; line-height: 1.75; margin-bottom: 52px; }
+
+  /* PAIN CARDS */
+  .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .pain-card { background: var(--panel); padding: 36px 30px; transition: background 0.25s; }
+  .pain-card:hover { background: #1a1a1a; }
+  .pain-num { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 16px; }
+  .pain-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin-bottom: 10px; line-height: 1.25; transition: color 0.25s; }
+  .pain-card:hover .pain-title { color: #fff; }
+  .pain-body { font-size: 14px; color: var(--ink-dim); line-height: 1.65; transition: color 0.25s; }
+  .pain-card:hover .pain-body { color: rgba(255,255,255,0.7); }
+
+  /* SOLUTION ROWS */
+  .solution-row { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; margin-bottom: 64px; padding-bottom: 64px; border-bottom: 1px solid var(--border); }
+  .solution-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .solution-row.flip { direction: rtl; }
+  .solution-row.flip > * { direction: ltr; }
+  .solution-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(3,163,254,0.3); padding: 4px 10px; border-radius: 2px; display: inline-block; margin-bottom: 18px; }
+  .solution-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 14px; line-height: 1.2; }
+  .solution-body { color: var(--ink-dim); font-size: 15px; line-height: 1.75; margin-bottom: 22px; }
+  .solution-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .solution-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--ink-dim); line-height: 1.5; }
+  .solution-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .solution-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 36px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .sol-panel-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+  .sol-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: var(--bg); border-radius: 4px; border: 1px solid var(--border); }
+  .sol-row-label { font-size: 12px; color: var(--ink-dim); }
+  .sol-row-value { font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+  .sol-row-value.green { color: #2d9a5f; }
+  .sol-row-value.amber { color: #f0a500; }
+  .sol-row-value.red { color: var(--accent); }
+  .sol-alert { background: var(--accent-faint); border: 1px solid rgba(3,163,254,0.15); border-radius: 4px; padding: 10px 14px; font-size: 11px; color: var(--ink-dim); line-height: 1.5; }
+  .sol-alert strong { color: var(--accent); font-weight: 500; }
+  .sol-alert.good { background: rgba(45,154,95,0.05); border-color: rgba(45,154,95,0.2); }
+  .sol-alert.good strong { color: #2d9a5f; }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 2px; }
+  .faq-item { background: var(--panel); border-radius: 4px; overflow: hidden; }
+  .faq-q { padding: 22px 28px; font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; user-select: none; transition: background 0.2s; }
+  .faq-q:hover { background: #e8e4df; }
+  .faq-q::after { content: '+'; font-size: 20px; color: var(--accent); font-weight: 300; flex-shrink: 0; transition: transform 0.2s; }
+  .faq-item.open .faq-q::after { transform: rotate(45deg); }
+  .faq-a { font-size: 14px; color: var(--ink-dim); line-height: 1.7; padding: 0 28px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; }
+  .faq-item.open .faq-a { max-height: 300px; padding: 0 28px 22px; }
+
+  /* CTA */
+  .cta-section { background: var(--off-bg); border-top: 1px solid var(--border); text-align: center; padding: 100px 48px; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; top: -250px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(circle, rgba(3,163,254,0.05) 0%, transparent 60%); pointer-events: none; }
+  .cta-inner { max-width: 580px; margin: 0 auto; position: relative; }
+  .cta-section .section-label { justify-content: center; }
+  .cta-section .section-label::before { display: none; }
+  .cta-title { font-family: var(--font-display); font-size: clamp(32px, 4.5vw, 52px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 18px; }
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-sub { color: var(--ink-dim); font-size: 16px; line-height: 1.75; margin-bottom: 40px; }
+  .cta-note { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; margin-top: 14px; }
+  .cross-link { display: inline-block; margin-top: 28px; font-size: 13px; color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--border-strong); padding-bottom: 1px; transition: color 0.2s, border-color 0.2s; }
+  .cross-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* FOOTER */
+  footer { padding: 36px 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .footer-brand-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--ink); }
+  .footer-right { font-size: 12px; color: var(--ink-faint); }
+  .footer-right a { color: var(--ink-dim); text-decoration: none; }
+  .footer-right a:hover { color: var(--ink); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 14px 24px; }
+    .nav-pill { display: none; }
+    section { padding: 64px 24px; }
+    .hero { padding: 120px 24px 64px; grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .pain-grid { grid-template-columns: 1fr; }
+    .solution-row { grid-template-columns: 1fr; gap: 36px; }
+    .solution-row.flip { direction: ltr; }
+    footer { padding: 28px 24px; }
+  }
+
+  /* ── VIMI LOGO ── */
+  .vimi-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #111111;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    display: inline-block;
+  }
+  .vimi-logo-footer { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="vimi-landing.html" class="nav-back">Atlas</a>
+    <div class="nav-divider"></div>
+    <a href="https://vimi.com" class="nav-logo">
+      <span class="vimi-logo">VIMI</span>
+      <div class="nav-logo-divider"></div>
+      <span class="nav-atlas-text">Atlas</span>
+    </a>
+    <span class="nav-pill">For Agencies</span>
+  </div>
+  <a href="#diagnostic" class="nav-cta">Book a diagnostic</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">For Marketing Agencies</div>
+    <h1 class="hero-headline">Your clients' Smart Bidding is trained on <em>broken signals.</em><br>And neither of you know it.</h1>
+    <p class="hero-sub">You manage campaigns. Atlas manages the signals those campaigns depend on — across every client, every platform, continuously.</p>
+    <div class="hero-actions">
+      <a href="#diagnostic" class="btn-primary">Book a client diagnostic →</a>
+      <a href="#solution" class="btn-ghost">See how it works ↓</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="vis-topbar">
+      <span class="vis-title">Client Book — Signal Status</span>
+      <span class="vis-badge">&#10003; Live monitoring</span>
+    </div>
+    <div class="vis-section-label">Clients</div>
+    <div class="vis-row"><span class="vis-row-label">Acme Retail</span><span class="vis-row-value green">&#10003; All signals clean</span></div>
+    <div class="vis-row"><span class="vis-row-label">TechFlow SaaS</span><span class="vis-row-value amber">&#9888; 1 warning</span></div>
+    <div class="vis-row"><span class="vis-row-label">Summit Finance</span><span class="vis-row-value red">&#9888; 2 issues detected</span></div>
+    <div class="vis-row"><span class="vis-row-label">Bloom Ecommerce</span><span class="vis-row-value green">&#10003; All signals clean</span></div>
+    <div class="vis-row"><span class="vis-row-label">Nova Health</span><span class="vis-row-value green">&#10003; All signals clean</span></div>
+    <div class="vis-divider"></div>
+    <div class="vis-alert warn">
+      <div class="vis-alert-dot red"></div>
+      <div class="vis-alert-text"><strong class="red">Summit Finance:</strong> Purchase event missing <code>transaction_id</code> parameter — Smart Bidding receiving incomplete data</div>
+    </div>
+    <div class="vis-footer">
+      <span class="vis-footer-label">Clients fully monitored</span>
+      <span class="vis-stat-num">5<span style="font-size:13px;color:rgba(17,17,17,0.35);font-family:var(--font-mono);font-weight:400"> clients</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Multi-client Signal Dashboard <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Proactive Break Alerting <span class="ticker-dot"></span></span>
+    <span class="ticker-item">White-label Diagnostic Reports <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Diagnostics as Lead-gen <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Google Enhanced Conversions <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Meta CAPI Validation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">GTM Monitoring <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Agency Volume Pricing <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Multi-client Signal Dashboard <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Proactive Break Alerting <span class="ticker-dot"></span></span>
+    <span class="ticker-item">White-label Diagnostic Reports <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Diagnostics as Lead-gen <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Google Enhanced Conversions <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Meta CAPI Validation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">GTM Monitoring <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Agency Volume Pricing <span class="ticker-dot"></span></span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section style="background: var(--off-bg); border-bottom: 1px solid var(--border);">
+  <div class="section-label reveal">The problem</div>
+  <h2 class="section-title reveal">The multi-client<br>signal problem.</h2>
+  <p class="section-sub reveal">You set up tracking during onboarding. The client's dev team pushes a site update three weeks later. A conversion event breaks silently. You don't find out until campaign performance dips and the client asks why ROAS dropped. Multiply this across your entire book.</p>
+  <div class="pain-grid reveal">
+    <div class="pain-card">
+      <div class="pain-num">01</div>
+      <div class="pain-title">No visibility across clients</div>
+      <p class="pain-body">You can't check every client's data layer every week. You're reactive, not proactive — and by the time you find the break, the campaign has already trained on bad data.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-num">02</div>
+      <div class="pain-title">Signal breaks erode client trust</div>
+      <p class="pain-body">When tracking breaks and performance dips, the client blames the agency — even when the problem is a dev-pushed site change. Atlas makes signal health visible before the QBR.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-num">03</div>
+      <div class="pain-title">Manual audits don't scale</div>
+      <p class="pain-body">A GTM audit per client per quarter is expensive and immediately stale. You need continuous monitoring across your book — not periodic check-ups that age out in days.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution" style="background: var(--bg);">
+  <div class="section-label reveal">The solution</div>
+  <h2 class="section-title reveal">Signal confidence across<br>your entire book.</h2>
+  <p class="section-sub reveal">Atlas gives you a multi-client signal dashboard, proactive alerting, and white-label reports — so you're never blindsided, and clients never have to know there was a problem.</p>
+
+  <div class="solution-row reveal">
+    <div>
+      <span class="solution-tag">Multi-client Dashboard</span>
+      <h3 class="solution-title">One view. Every client. Red, amber, green signal status.</h3>
+      <p class="solution-body">Atlas surfaces signal health across your entire book in a single dashboard — so you know which clients have clean data and which have issues developing, before the phone rings.</p>
+      <ul class="solution-list">
+        <li>Signal status per client, per platform — GA4, Google Ads, Meta CAPI</li>
+        <li>Proactive alerts the moment a tag breaks — before performance drops</li>
+        <li>Fix recommendations delivered with each alert, not just problem flags</li>
+        <li>Historical signal health log per client for QBR conversations</li>
+      </ul>
+    </div>
+    <div class="solution-panel">
+      <div class="sol-panel-label">Signal Dashboard — 5 clients</div>
+      <div class="sol-row"><span class="sol-row-label">Acme Retail</span><span class="sol-row-value green">&#10003; Clean</span></div>
+      <div class="sol-row"><span class="sol-row-label">TechFlow SaaS</span><span class="sol-row-value amber">&#9888; Warning</span></div>
+      <div class="sol-row"><span class="sol-row-label">Summit Finance</span><span class="sol-row-value red">&#9888; 2 issues</span></div>
+      <div class="sol-row"><span class="sol-row-label">Bloom Ecommerce</span><span class="sol-row-value green">&#10003; Clean</span></div>
+      <div class="sol-row"><span class="sol-row-label">Nova Health</span><span class="sol-row-value green">&#10003; Clean</span></div>
+      <div class="sol-alert"><strong>Alert sent:</strong> Summit Finance purchase event missing parameter — fix deployed in 2 hours, before client noticed.</div>
+    </div>
+  </div>
+
+  <div class="solution-row flip reveal">
+    <div class="solution-panel">
+      <div class="sol-panel-label">Diagnostic Report — Prospect Client</div>
+      <div class="sol-row"><span class="sol-row-label">Pages scanned</span><span class="sol-row-value green">214</span></div>
+      <div class="sol-row"><span class="sol-row-label">Broken events found</span><span class="sol-row-value red">7 critical</span></div>
+      <div class="sol-row"><span class="sol-row-label">Duplicate conversions</span><span class="sol-row-value red">3 detected</span></div>
+      <div class="sol-row"><span class="sol-row-label">Estimated spend affected</span><span class="sol-row-value amber">~18% of budget</span></div>
+      <div class="sol-alert"><strong>Outcome:</strong> Prospect saw the diagnostic report and signed a 12-month monitoring retainer within a week.</div>
+    </div>
+    <div>
+      <span class="solution-tag">Diagnostics as Lead-gen</span>
+      <h3 class="solution-title">Turn the $500–$800 diagnostic into your best new business tool.</h3>
+      <p class="solution-body">The paid signal diagnostic works as a standalone offer for prospective clients. Show them what's broken in their tracking before they commit to a retainer — and convert the diagnostic into a long-term managed engagement.</p>
+      <ul class="solution-list">
+        <li>Paid diagnostic qualifies the lead and funds the sales process</li>
+        <li>Delivers a branded signal health report — immediate value to the prospect</li>
+        <li>Natural upsell path from diagnostic into ongoing monitoring retainer</li>
+        <li>White-label: all reports are branded to your agency, not VIMI</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="solution-row reveal">
+    <div>
+      <span class="solution-tag">Commercial Model</span>
+      <h3 class="solution-title">Make signal monitoring a profit centre, not a cost.</h3>
+      <p class="solution-body">Agency pricing is per-client with volume tiers — the more clients on Atlas, the lower the per-client cost. Resell signal diagnostics and monitoring as a value-added service your clients pay for.</p>
+      <ul class="solution-list">
+        <li>Per-client managed retainer, annual billing preferred</li>
+        <li>Volume tiers — costs drop as your book grows</li>
+        <li>Start with one client. Run the diagnostic. See the results. Roll out.</li>
+        <li>Atlas becomes a billable line item, not just an overhead</li>
+      </ul>
+    </div>
+    <div class="solution-panel">
+      <div class="sol-panel-label">Agency engagement model</div>
+      <div class="sol-row"><span class="sol-row-label">Entry point</span><span class="sol-row-value green">Paid diagnostic</span></div>
+      <div class="sol-row"><span class="sol-row-label">Diagnostic fee</span><span class="sol-row-value">$500–$800</span></div>
+      <div class="sol-row"><span class="sol-row-label">Delivery</span><span class="sol-row-value green">5 business days</span></div>
+      <div class="sol-row"><span class="sol-row-label">Ongoing model</span><span class="sol-row-value">Per-client retainer</span></div>
+      <div class="sol-row"><span class="sol-row-label">Billing</span><span class="sol-row-value">Annual preferred</span></div>
+      <div class="sol-alert good"><strong>Partner benefit:</strong> Volume pricing unlocks after 3 clients. White-label reporting included from day one.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background: var(--off-bg); border-top: 1px solid var(--border);">
+  <div class="section-label reveal">Common questions</div>
+  <h2 class="section-title reveal">What agencies ask us.</h2>
+  <div class="faq-list reveal" style="max-width: 760px;">
+    <div class="faq-item">
+      <div class="faq-q">We already have GTM set up for every client. Why do we need this?</div>
+      <div class="faq-a">GTM being "set up" doesn't mean it's sending correct signals. Most implementations drift within weeks of any site change. Atlas validates what GTM is actually sending vs. what Google and Meta need to receive — continuously, not just at setup.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How is this different from a one-time GTM audit?</div>
+      <div class="faq-a">A one-time audit is accurate for about 2–4 weeks. Every site update, CMS change, and new campaign can break signals. Atlas monitors continuously — the diagnostic is your entry point, not the full engagement.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Will our clients know we're using Atlas?</div>
+      <div class="faq-a">No. All client-facing reports are white-labelled to your agency. Atlas runs in the background — your clients see your brand, not ours.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How is this different from ObservePoint or Trackingplan?</div>
+      <div class="faq-a">Those tools scan for tag presence. Atlas validates the full conversion signal chain end-to-end — from data layer to platform API — and is delivered as a managed service. You don't operate it yourself.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can we start with just one client?</div>
+      <div class="faq-a">That's exactly how we recommend starting. Run the diagnostic on your most important client. See what's broken. Then decide whether to roll it out across your book. No commitment beyond the initial diagnostic.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="diagnostic">
+  <div class="cta-inner">
+    <div class="section-label">Start here</div>
+    <h2 class="cta-title">Start with one client.<br><em>See what's broken.</em></h2>
+    <p class="cta-sub">Book a diagnostic for your most important client. 5 days. A full signal health report showing every broken, duplicate, or missing conversion event — and what it's costing their campaigns.</p>
+    <form onsubmit="handleDiagnostic(event)" style="display:flex;gap:0;max-width:460px;margin:0 auto 14px;">
+      <input type="email" id="diag-email" placeholder="your@agency.com" required style="flex:1;background:var(--panel);border:1px solid var(--border-strong);border-right:none;border-radius:4px 0 0 4px;padding:14px 18px;font-family:var(--font-body);font-size:15px;color:var(--ink);outline:none;" />
+      <button type="submit" style="background:var(--accent);color:#fff;border:none;border-radius:0 4px 4px 0;padding:14px 22px;font-family:var(--font-body);font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap;">Book diagnostic →</button>
+    </form>
+    <p class="cta-note">Diagnostic fee: $500–$800 per client. Delivered in 5 business days. No commitment beyond that.</p>
+    <a href="vimi-inhouse.html" class="cross-link">Not an agency? See the in-house solution →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://vimi.com" class="footer-brand">
+    <span class="vimi-logo vimi-logo-footer">VIMI</span>
+  </a>
+  <div class="footer-right">
+    <a href="vimi-landing.html">← Back to Atlas</a> &nbsp;·&nbsp; © 2026 VIMI &nbsp;·&nbsp; <a href="https://vimi.com/contact/">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // CTA form
+  function handleDiagnostic(e) {
+    e.preventDefault();
+    const email = document.getElementById('diag-email').value;
+    window.location.href = 'mailto:hello@vimi.com?subject=Atlas Signal Diagnostic&body=Hi Vikram, I%27d like to book a signal diagnostic. My email is ' + encodeURIComponent(email) + '.';
+  }
+</script>
+</body>
+</html>

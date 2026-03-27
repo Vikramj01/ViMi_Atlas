@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlas by VIMI — Marketing Signal Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #ffffff;
+    --off-black: #f7f5f2;
+    --panel: #f0ede9;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --white: #111111;
+    --white-dim: rgba(17,17,17,0.55);
+    --white-faint: rgba(17,17,17,0.3);
+    --accent: #03A3FE;
+    --accent-dim: rgba(3,163,254,0.15);
+    --accent-faint: rgba(3,163,254,0.06);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 48px;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .nav-logo-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--border-strong);
+    margin: 0 4px;
+  }
+  .nav-atlas-text {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--white-dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 500 !important;
+    transition: opacity 0.2s !important;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 140px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-content { display: flex; flex-direction: column; }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(3,163,254,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(3,163,254,0.04) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* ── HERO DASHBOARD ── */
+  .hero-dashboard {
+    background: #f7f5f2;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+    position: relative;
+    z-index: 1;
+  }
+  .dash-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .dash-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+  .dash-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #2d9a5f;
+    background: rgba(45,154,95,0.1);
+    border: 1px solid rgba(45,154,95,0.2);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .dash-section-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white-faint);
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  .dash-metric {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .dash-metric-left { flex: 1; }
+  .dash-metric-name {
+    font-size: 12px;
+    color: rgba(17,17,17,0.5);
+    margin-bottom: 4px;
+  }
+  .dash-metric-bar-wrap {
+    height: 3px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .dash-metric-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .dash-metric-bar.green { background: #2d9a5f; }
+  .dash-metric-bar.amber { background: #f0a500; }
+  .dash-metric-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .dash-metric-value.red { color: var(--accent); }
+  .dash-metric-value.green { color: #2d9a5f; }
+  .dash-metric-value.amber { color: #f0a500; }
+  .dash-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 2px 0;
+  }
+  .dash-alert {
+    background: rgba(3,163,254,0.05);
+    border: 1px solid rgba(3,163,254,0.15);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .dash-alert-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .dash-alert-text {
+    font-size: 11px;
+    color: rgba(17,17,17,0.6);
+    line-height: 1.5;
+  }
+  .dash-alert-text strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .dash-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .dash-footer-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-faint);
+  }
+  .dash-score {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: #2d9a5f;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.1s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 92px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    max-width: 100%;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--white-dim);
+    max-width: 720px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.3s forwards;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--white-dim);
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border-strong);
+    font-size: 15px;
+    font-weight: 400;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+  .hero-stat-row {
+    display: flex;
+    gap: 48px;
+    margin-top: 72px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.55s forwards;
+    flex-wrap: wrap;
+  }
+  .hero-stat { }
+  .hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: var(--white-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--white-dim);
+    font-size: 17px;
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 60px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    margin-top: 16px;
+  }
+  .step {
+    background: var(--panel);
+    padding: 40px 32px;
+    position: relative;
+    transition: background 0.25s;
+  }
+  .step:hover { background: #1c1c1c; }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--accent-dim);
+    line-height: 1;
+    margin-bottom: 20px;
+    transition: color 0.25s;
+  }
+  .step:hover .step-num { color: rgba(3,163,254,0.35); }
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--white);
+    transition: color 0.25s;
+  }
+  .step:hover .step-title { color: #ffffff; }
+  .step-body {
+    font-size: 14px;
+    color: var(--white-dim);
+    line-height: 1.65;
+    transition: color 0.25s;
+  }
+  .step:hover .step-body { color: rgba(255,255,255,0.7); }
+  .step-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(3,163,254,0.35);
+    padding: 3px 8px;
+    border-radius: 2px;
+    transition: border-color 0.25s;
+  }
+  .step:hover .step-tag { border-color: rgba(3,163,254,0.5); }
+
+  /* ── AUDIENCE SPLIT ── */
+  .audience {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .audience-panel {
+    padding: 60px 52px;
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+  .audience:hover .audience-panel { background: #1a1a1a; }
+  .audience-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .audience-panel:hover::before { transform: scaleX(1); }
+  .audience-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(3,163,254,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 24px;
+    transition: border-color 0.25s;
+  }
+  .audience:hover .audience-panel .audience-tag { border-color: rgba(3,163,254,0.5); }
+  .audience-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    line-height: 1.2;
+    transition: color 0.25s;
+  }
+  .audience:hover .audience-panel .audience-title { color: #ffffff; }
+  .audience-body {
+    color: var(--white-dim);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    transition: color 0.25s;
+  }
+  .audience:hover .audience-panel .audience-body { color: rgba(255,255,255,0.7); }
+  .audience-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .audience-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--white-dim);
+    line-height: 1.5;
+    transition: color 0.25s;
+  }
+  .audience:hover .audience-panel .audience-list li { color: rgba(255,255,255,0.7); }
+  .audience-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 28px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid rgba(3,163,254,0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s, color 0.25s;
+  }
+  .audience:hover .audience-panel .audience-link {
+    color: #fff;
+    border-bottom-color: rgba(255,255,255,0.4);
+  }
+  .audience-link:hover { border-color: var(--accent); }
+  .audience-list li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-top: 8px;
+  }
+  .feature-card {
+    background: var(--panel);
+    padding: 36px 32px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .feature-card:hover {
+    background: #1a1a1a;
+    border-bottom-color: var(--accent);
+  }
+  .feature-icon {
+    width: 40px; height: 40px;
+    background: var(--accent-faint);
+    border: 1px solid rgba(3,163,254,0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .feature-card:hover .feature-icon {
+    background: rgba(3,163,254,0.12);
+    border-color: rgba(3,163,254,0.35);
+  }
+  .feature-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    transition: color 0.25s;
+  }
+  .feature-card:hover .feature-title { color: #ffffff; }
+  .feature-body {
+    font-size: 14px;
+    color: var(--white-dim);
+    line-height: 1.65;
+    transition: color 0.25s;
+  }
+  .feature-card:hover .feature-body { color: rgba(255,255,255,0.7); }
+
+  /* ── WAITLIST / CTA ── */
+  .cta-section {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 100px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -300px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(circle, rgba(3,163,254,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .cta-section .section-label {
+    justify-content: center;
+  }
+  .cta-section .section-label::before { display: none; }
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-sub {
+    color: var(--white-dim);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 44px;
+  }
+  .waitlist-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+  .waitlist-input {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    padding: 14px 18px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .waitlist-input::placeholder { color: var(--white-faint); }
+  .waitlist-input:focus { border-color: rgba(3,163,254,0.4); }
+  .waitlist-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 14px 24px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .waitlist-btn:hover { opacity: 0.85; }
+  .waitlist-note {
+    font-size: 12px;
+    color: var(--white-faint);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .footer-logo-mark {
+    width: 26px; height: 26px;
+    background: var(--accent);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 13px;
+    color: #fff;
+  }
+  .footer-brand-name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: #111111;
+  }
+  .footer-right {
+    font-size: 12px;
+    color: var(--white-faint);
+  }
+  .footer-right a {
+    color: var(--white-dim);
+    text-decoration: none;
+  }
+  .footer-right a:hover { color: var(--white); }
+
+  /* ── DIVIDER ── */
+  .divider-label {
+    padding: 0 48px;
+    margin: 0;
+    position: relative;
+  }
+  .divider-label::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: var(--border);
+    margin-top: -12px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    background: rgba(3,163,254,0.05);
+  }
+  .ticker {
+    display: flex;
+    gap: 64px;
+    animation: ticker 22s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .ticker-dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin: 0 8px;
+    vertical-align: middle;
+    opacity: 0.5;
+  }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding-left: 24px; padding-right: 24px; }
+    .hero { padding: 120px 24px 60px; grid-template-columns: 1fr; }
+    .hero-dashboard { display: none; }
+    .audience { grid-template-columns: 1fr; }
+    .audience-panel { padding: 40px 28px; }
+    .waitlist-form { flex-direction: column; }
+    .waitlist-input { border-right: 1px solid var(--border-strong); border-radius: 4px; border-bottom: none; }
+    .waitlist-btn { border-radius: 4px; }
+    footer { padding: 32px 24px; }
+    .hero-stat-row { gap: 28px; }
+    .divider-label { padding: 0 24px; }
+  }
+
+  /* ── STAT STRIP ── */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 48px;
+  }
+  .stat-item {
+    background: var(--panel);
+    padding: 32px 28px;
+    transition: background 0.25s;
+  }
+  .stat-item:hover { background: #1a1a1a; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 44px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--white-dim);
+    line-height: 1.5;
+    transition: color 0.25s;
+  }
+  .stat-item:hover .stat-label { color: rgba(255,255,255,0.7); }
+
+  /* ── BEFORE / AFTER ── */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  .ba-col { padding: 0; }
+  .ba-header {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ba-before .ba-header { color: var(--accent); background: rgba(3,163,254,0.05); border: 1px solid rgba(3,163,254,0.15); border-radius: 6px 6px 0 0; }
+  .ba-after .ba-header { color: #2d9a5f; background: rgba(45,154,95,0.05); border: 1px solid rgba(45,154,95,0.15); border-radius: 6px 6px 0 0; }
+  .ba-list {
+    list-style: none;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+  }
+  .ba-list li {
+    padding: 14px 28px;
+    font-size: 14px;
+    color: var(--white-dim);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .ba-list li:last-child { border-bottom: none; }
+  .ba-before .ba-list li::before { content: '✕'; color: var(--accent); flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+  .ba-after .ba-list li::before { content: '✓'; color: #2d9a5f; flex-shrink: 0; font-size: 11px; margin-top: 2px; font-weight: 700; }
+  .ba-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--white-faint);
+    font-family: var(--font-display);
+  }
+
+  @media (max-width: 768px) {
+    .stat-strip { grid-template-columns: 1fr; }
+    .before-after { grid-template-columns: 1fr; }
+    .ba-divider { display: none; }
+  }
+
+  /* ── AUDIENCE SECTION DARK OVERRIDES ── */
+  .audience-section-header .section-label { color: var(--accent); }
+  .audience-section-header .section-title { color: #f5f2ec; }
+  .audience-section-header .section-sub { color: rgba(245,242,236,0.55); }
+  #for-agencies .audience-panel { background: #222222; }
+  #for-agencies .audience-title { color: #f5f2ec; }
+  #for-agencies .audience-body { color: rgba(245,242,236,0.6); }
+  #for-agencies .audience-list li { color: rgba(245,242,236,0.6); }
+  #for-agencies .audience-link { color: var(--accent); }
+  #for-agencies .audience:hover .audience-panel { background: #111111; }
+  #for-agencies .audience:hover .audience-panel .audience-title { color: #ffffff; }
+  #for-agencies .audience:hover .audience-panel .audience-body { color: rgba(255,255,255,0.75); }
+  #for-agencies .audience:hover .audience-panel .audience-list li { color: rgba(255,255,255,0.75); }
+  #for-agencies .audience:hover .audience-panel .audience-link { color: #ffffff; border-bottom-color: rgba(255,255,255,0.4); }
+
+  /* ── VIMI LOGO ── */
+  .vimi-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #111111;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    display: inline-block;
+  }
+  .vimi-logo-footer { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://vimi.com" class="nav-logo">
+    <span class="vimi-logo">VIMI</span>
+    <div class="nav-logo-divider"></div>
+    <span class="nav-atlas-text">Atlas</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#for-agencies">For agencies</a></li>
+    <li><a href="#for-teams">For teams</a></li>
+    <li><a href="#waitlist" class="nav-cta">Join waitlist</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Left: copy -->
+  <div class="hero-content">
+    <div class="hero-eyebrow">Conversion Signal Intelligence</div>
+    <h1 class="hero-headline">You're training the ad platforms<br>to <em>waste your money.</em></h1>
+    <p class="hero-sub">Atlas is a signal optimisation and tracking infrastructure platform. Know exactly where your signals break, where budget leaks, and what’s actually driving growth.</p>
+    <div class="hero-actions">
+      <a href="#waitlist" class="btn-primary">Book a signal diagnostic →</a>
+      <a href="#how-it-works" class="btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <div class="hero-stat-num">26+</div>
+        <div class="hero-stat-label">Validation rules</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Tracking layers</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">AI</div>
+        <div class="hero-stat-label">Powered audit &amp; tagging</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">GTM</div>
+        <div class="hero-stat-label">Client + server-side</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: dashboard mock -->
+  <div class="hero-dashboard">
+    <div class="dash-topbar">
+      <span class="dash-title">Signal Health Report</span>
+      <span class="dash-badge">● Live</span>
+    </div>
+
+    <div class="dash-section-label">Journey Coverage</div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Checkout funnel</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar green" style="width:94%"></div></div>
+      </div>
+      <span class="dash-metric-value green">94%</span>
+    </div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Lead capture</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar amber" style="width:61%"></div></div>
+      </div>
+      <span class="dash-metric-value amber">61%</span>
+    </div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Product page events</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar green" style="width:88%"></div></div>
+      </div>
+      <span class="dash-metric-value green">88%</span>
+    </div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Email signup tracking</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar" style="width:12%"></div></div>
+      </div>
+      <span class="dash-metric-value red">12%</span>
+    </div>
+
+    <div class="dash-divider"></div>
+    <div class="dash-section-label">Validation</div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Schema compliance</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar green" style="width:100%"></div></div>
+      </div>
+      <span class="dash-metric-value green">✓ Pass</span>
+    </div>
+    <div class="dash-metric">
+      <div class="dash-metric-left">
+        <div class="dash-metric-name">Attribution chain</div>
+        <div class="dash-metric-bar-wrap"><div class="dash-metric-bar green" style="width:100%"></div></div>
+      </div>
+      <span class="dash-metric-value green">✓ Pass</span>
+    </div>
+
+    <div class="dash-alert">
+      <div class="dash-alert-dot"></div>
+      <div class="dash-alert-text"><strong>2 issues flagged</strong> — lead form missing required parameters on /contact and /pricing</div>
+    </div>
+
+    <div class="dash-footer">
+      <span class="dash-footer-label">Overall signal score</span>
+      <span class="dash-score">78<span style="font-size:13px;color:rgba(17,17,17,0.4);font-family:var(--font-mono);font-weight:400">/100</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Signal Validation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Journey Mapping <span class="ticker-dot"></span></span>
+    <span class="ticker-item">GTM Automation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Attribution Intelligence <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Dual-layer Tracking <span class="ticker-dot"></span></span>
+    <span class="ticker-item">AI-Powered Audit <span class="ticker-dot"></span></span>
+    <span class="ticker-item">DuckDB Analytics <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Budget Leak Detection <span class="ticker-dot"></span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">Signal Validation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Journey Mapping <span class="ticker-dot"></span></span>
+    <span class="ticker-item">GTM Automation <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Attribution Intelligence <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Dual-layer Tracking <span class="ticker-dot"></span></span>
+    <span class="ticker-item">AI-Powered Audit <span class="ticker-dot"></span></span>
+    <span class="ticker-item">DuckDB Analytics <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Budget Leak Detection <span class="ticker-dot"></span></span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how-it-works">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title reveal">From messy signals<br>to clear decisions</h2>
+  <p class="section-sub reveal">Atlas works in three stages — scanning your existing setup, validating what's broken, and giving you a ready-to-deploy fix.</p>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Diagnose</div>
+      <p class="step-body">We crawl your site and scan every tag, event, and data layer push. You get a full signal health report showing exactly what's broken, missing, or sending bad data to the platforms.</p>
+      <span class="step-tag">Full-stack scan</span>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Fix & Validate</div>
+      <p class="step-body">Atlas maps your conversion signals against your actual business funnel — ensuring the right events fire with the right parameters. We validate the full chain: site → data layer → GTM → platform.</p>
+      <span class="step-tag">End-to-end validation</span>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Monitor & Protect</div>
+      <p class="step-body">Signals break with every site update. Atlas runs continuous checks against your tracking infrastructure, alerting on breaks before they impact campaign performance. No more month-end surprises.</p>
+      <span class="step-tag">Continuous monitoring</span>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">GTM Deployment</div>
+      <p class="step-body">Export a production-ready GTM container JSON. Deploy in minutes, not days. Your tracking is live, clean, and maintainable.</p>
+      <span class="step-tag">One-click export</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background: var(--black); border-bottom: 1px solid var(--border);">
+  <div class="section-label">Core capabilities</div>
+  <h2 class="section-title reveal">Built for the entire<br>marketing stack</h2>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon">🗺</div>
+      <div class="feature-title">Journey Builder</div>
+      <p class="feature-body">A hybrid guided wizard and AI-assisted flow to define customer journeys and generate composable tracking tags.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Planning Mode</div>
+      <p class="feature-body">Pre-audit AI agent that scans your site, recommends tagging strategies, and generates a full GTM container JSON.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <div class="feature-title">Signal Validation</div>
+      <p class="feature-body">Three-layer validation across schema, parameters, and attribution with 26+ rules catching issues before they escalate.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Dual Tracking</div>
+      <p class="feature-body">Client-side and server-side GTM in a single platform. Never lose a signal to ad blockers or browser restrictions again.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Analytics Layer</div>
+      <p class="feature-body">DuckDB-powered analytics engine for fast, in-depth signal analysis — without sending raw data to third parties.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <div class="feature-title">WalkerOS Integration</div>
+      <p class="feature-body">First-party signal repository built on WalkerOS. Own your data, control your schema, maintain continuity across platforms.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM STATEMENT -->
+<section style="background: var(--off-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-label reveal">The problem</div>
+  <h2 class="section-title reveal">Your bidding AI is learning<br>from bad data. Every day.</h2>
+  <p class="section-sub reveal">When conversion signals are wrong, the ad platforms don't stop optimising. They optimise harder — towards the wrong outcomes. Smart Bidding targets worse audiences. CAPI sends duplicate events. Attribution reports tell a story that isn't true.</p>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Duplicate & misfired events</div>
+      <p class="step-body">Every duplicate conversion event trains Google and Meta's algorithms to believe a certain action is more common than it is — skewing audience targeting, bidding, and ROAS reporting.</p>
+      <span class="step-tag">Silent damage</span>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Tags break with every site change</div>
+      <p class="step-body">A CMS update, new landing page, or checkout redesign can silently break conversion tracking. You won't know until campaign performance drops and the client asks why.</p>
+      <span class="step-tag">Ongoing risk</span>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Nobody owns the signal layer</div>
+      <p class="step-body">Marketing assumes dev handled it. Dev assumes the agency set it up. Nobody is continuously verifying that what's being sent to Google and Meta is actually correct.</p>
+      <span class="step-tag">Accountability gap</span>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Attribution is a best guess</div>
+      <p class="step-body">If events are duplicating, misfiring, or missing parameters, every attribution report is wrong — and you're making budget decisions based on it every single month.</p>
+      <span class="step-tag">Compounding error</span>
+    </div>
+  </div>
+
+  <!-- Stat strip -->
+  <div class="stat-strip reveal">
+    <div class="stat-item">
+      <div class="stat-num">3–4</div>
+      <div class="stat-label">incorrect signals per user session on the average site</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">47%</div>
+      <div class="stat-label">of sites have at least one broken conversion event</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">30%</div>
+      <div class="stat-label">of ad spend can optimise against flawed data</div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-label reveal">What changes</div>
+  <h2 class="section-title reveal">What changes when<br>your signals are clean.</h2>
+  <div class="before-after reveal">
+    <div class="ba-col ba-before">
+      <div class="ba-header">Without Atlas</div>
+      <ul class="ba-list">
+        <li>You find broken tags at month-end reporting</li>
+        <li>Smart Bidding trains on duplicate / wrong events</li>
+        <li>Attribution is a best guess</li>
+        <li>GTM audits are quarterly at best</li>
+        <li>You optimise towards vanity metrics</li>
+      </ul>
+    </div>
+    <div class="ba-divider">→</div>
+    <div class="ba-col ba-after">
+      <div class="ba-header">With Atlas</div>
+      <ul class="ba-list">
+        <li>Atlas catches breaks within hours of a site change</li>
+        <li>Platforms receive validated, deduplicated signals</li>
+        <li>Attribution reflects actual conversions</li>
+        <li>Signal monitoring runs continuously, 24/7</li>
+        <li>You optimise towards real business outcomes</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE SPLIT --><!-- AUDIENCE SPLIT -->
+<section class="audience-section-header" style="background: #1a1a1a; border-bottom: 1px solid rgba(255,255,255,0.08); padding-top: 80px; padding-bottom: 0;">
+  <div class="section-label">Who it's for</div>
+  <h2 class="section-title">Built for the people who<br>own the signal chain.</h2>
+  <p class="section-sub">Two audiences. One problem. Different stakes.</p>
+</section>
+<div id="for-agencies" style="padding: 0 0 100px; background: #1a1a1a;">
+  <div class="audience" style="max-width: 1400px; margin: 0 auto; padding: 0 48px;">
+    <div class="audience-panel" id="for-agencies-panel">
+      <span class="audience-tag">For Agencies</span>
+      <h3 class="audience-title">Managing tracking across multiple clients is a nightmare. One broken tag = one angry client.</h3>
+      <p class="audience-body">You can't check every client's data layer every week. Atlas gives you signal confidence across your entire book — proactive alerting, multi-client dashboard, white-label reports.</p>
+      <ul class="audience-list">
+        <li>Multi-client signal dashboard — red/amber/green per client, per platform</li>
+        <li>Proactive alerting before performance dips and the client notices</li>
+        <li>White-label diagnostic reports branded to your agency</li>
+        <li>Use the paid diagnostic as a lead-gen tool for prospective clients</li>
+      </ul>
+      <a href="vimi-agencies.html" class="audience-link">See Atlas for Agencies →</a>
+    <div class="audience-panel" id="for-teams">
+      <span class="audience-tag">For In-House Teams</span>
+      <h3 class="audience-title">You're spending six figures a month on ads. How confident are you the conversion data is correct?</h3>
+      <p class="audience-body">If the signals feeding your ROAS reports are wrong, your attribution is fiction and Smart Bidding is training on bad data. Atlas validates the entire signal chain so your reports reflect reality.</p>
+      <ul class="audience-list">
+        <li>Full-stack signal audit across every tag, event, and data layer push</li>
+        <li>Direct integration with your GTM, Google Ads, and Meta CAPI</li>
+        <li>Executive-ready signal health reports alongside your performance reports</li>
+        <li>Continuous monitoring — catches breaks before they hit your campaigns</li>
+      </ul>
+      <a href="vimi-inhouse.html" class="audience-link">See Atlas for In-House Teams →</a>
+  </div>
+</div>
+
+<!-- CTA / WAITLIST -->
+<section class="cta-section" id="waitlist">
+  <div class="cta-inner">
+    <div class="section-label">Early Access</div>
+    <h2 class="cta-title reveal">Your signals are either<br>an asset or a <em>liability.</em></h2>
+    <p class="cta-sub reveal">One paid diagnostic. A full picture of your signal health. No commitment beyond that. Currently accepting a limited number of diagnostic engagements in UAE and Singapore.</p>
+    <form class="waitlist-form reveal" onsubmit="handleWaitlist(event)">
+      <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com" required />
+      <button type="submit" class="waitlist-btn">Book a signal diagnostic →</button>
+    </form>
+    <p class="waitlist-note reveal">Email us directly: <a href="mailto:hello@vimi.com" style="color:var(--accent);text-decoration:none;">hello@vimi.com</a></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://vimi.com" class="footer-brand">
+    <div class="footer-logo-mark">A</div>
+    <span class="footer-brand-name">Atlas by VIMI</span>
+  </a>
+  <div class="footer-right">
+    © 2026 VIMI &nbsp;·&nbsp; <a href="https://vimi.com">vimi.com</a> &nbsp;·&nbsp; <a href="https://vimi.com/contact/">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Waitlist form
+  function handleWaitlist(e) {
+    e.preventDefault();
+    const email = document.getElementById('waitlist-email').value;
+    window.location.href = `mailto:hello@vimi.com?subject=Atlas Waitlist&body=Hi, I'd like to join the Atlas waitlist. My email is ${encodeURIComponent(email)}.`;
+  }
+</script>
+</body>
+</html>
